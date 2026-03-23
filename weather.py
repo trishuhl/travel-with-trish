@@ -81,6 +81,18 @@ def get_forecast(destination: str, dates_str: str) -> dict:
 
     # Open-Meteo caps forecasts at 16 days; clamp end date
     max_end = date.today() + timedelta(days=15)
+    if start > max_end:
+        return {
+            "destination": resolved_name,
+            "start": start.isoformat(),
+            "end": end.isoformat(),
+            "temp_max_c": None,
+            "temp_min_c": None,
+            "avg_temp_c": None,
+            "max_precip_pct": None,
+            "conditions": ["No forecast available (trip is more than 16 days away)"],
+            "daily": [],
+        }
     if end > max_end:
         end = max_end
 
