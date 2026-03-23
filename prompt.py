@@ -3,10 +3,11 @@ def build_prompt(destination: str, dates: str, forecast: dict, style: str) -> st
 
     conditions = ", ".join(forecast["conditions"]) if forecast["conditions"] else "mixed"
     rain_note = ""
-    if forecast["max_precip_pct"] >= 50:
-        rain_note = f"There's a significant chance of rain (up to {forecast['max_precip_pct']}%)."
-    elif forecast["max_precip_pct"] >= 20:
-        rain_note = f"There's a small chance of rain (up to {forecast['max_precip_pct']}%), worth being prepared."
+    if forecast["max_precip_pct"] is not None:
+        if forecast["max_precip_pct"] >= 50:
+            rain_note = f"There's a significant chance of rain (up to {forecast['max_precip_pct']}%)."
+        elif forecast["max_precip_pct"] >= 20:
+            rain_note = f"There's a small chance of rain (up to {forecast['max_precip_pct']}%), worth being prepared."
 
     style_notes = {
         "casual":    "This is a casual leisure trip — comfortable, versatile clothing.",
@@ -20,7 +21,7 @@ def build_prompt(destination: str, dates: str, forecast: dict, style: str) -> st
 TRIP DETAILS:
 - Destination: {forecast['destination']}
 - Dates: {dates} ({forecast['start']} to {forecast['end']})
-- Weather: Highs {forecast['temp_max_c']}°C / Lows {forecast['temp_min_c']}°C · {conditions}
+- Weather: {f"Highs {forecast['temp_max_c']}°C / Lows {forecast['temp_min_c']}°C · {conditions}" if forecast['temp_max_c'] is not None else conditions}
 - {rain_note}
 - Style: {style_notes.get(style, style)}
 
